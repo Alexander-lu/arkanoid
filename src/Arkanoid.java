@@ -3,7 +3,7 @@ import acm.program.*;
 
 import java.awt.*;
 
-public class Arkanoid extends GraphicsProgram {
+public class Arkanoid extends HeadlessGraphicsProgram {
 
     /* 动画每一帧间隔10ms*/
     private static final int DELAY = 10;
@@ -33,15 +33,9 @@ public class Arkanoid extends GraphicsProgram {
      * 初始化
      */
     public void init() {
-        System.out.println("hello");
-        // 设置小球位置和初始速度
-        ball = makeBall();
-
-        // 水平速度
-        vx = VELOCITY_X;
-
-        // 竖直速度
-        vy = VELOCITY_Y;
+        makeBall();             // 往屏幕上添加小球
+        vx = VELOCITY_X;        // 水平速度
+        vy = VELOCITY_Y;        // 竖直速度
     }
 
     public void run() {
@@ -122,13 +116,18 @@ public class Arkanoid extends GraphicsProgram {
      * -----------------------
      * 画出一个小球来
      */
-    public GOval makeBall() {
+    public void makeBall() {
         double size = BALL_RADIUS * 2;
-        GOval r = new GOval(size, size);
-        r.setFilled(true);
-        r.setColor(BALL_COLOR);
-        add(r, 20, 20);
-        return r;
+        ball = new GOval(size, size);
+
+        // 设置小球为实心
+        ball.setFilled(true);
+
+        // 填充颜色是黑色
+        ball.setColor(BALL_COLOR);
+
+        // 添加到画布上(20,20)的位置
+        add(ball, 20, 20);
     }
 
 }
