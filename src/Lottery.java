@@ -16,11 +16,6 @@ public class Lottery extends GraphicsProgram {
         GLabel label = new GLabel("本次获奖编号为：" + number);
 
         // 添加到画布上(100,100)的位置
-        GOval oval = new GOval(30, 30);
-        oval.setFilled(true);
-        oval.setColor(Color.BLUE);
-        add(oval, 100, 80);
         add(label, 100, 100);
-
     }
 }
