@@ -3,7 +3,7 @@ import acm.program.*;
 
 import java.awt.*;
 
-public class Arkanoid extends HeadlessGraphicsProgram {
+public class Arkanoid extends GraphicsProgram {
 
     /* 动画每一帧间隔10ms*/
     private static final int DELAY = 10;
@@ -42,6 +42,7 @@ public class Arkanoid extends HeadlessGraphicsProgram {
         // 等待用户点击
         waitForClick();
 
+        //noinspection InfiniteLoopStatement
         while (true) {
             // 检查是否撞墙
             checkCollision();
