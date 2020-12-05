@@ -23,6 +23,7 @@ public class Hide extends GraphicsProgram {
         addMouseListeners();
     }
 
+    // 通过addMouseListeners启用鼠标后，每当检测到鼠标移动时，都会自动调用这个函数
     public void mouseMoved(MouseEvent e) {
         // getElementAt(x, y)可以获取画布上(x,y)位置的图形
         GObject obj = getElementAt(e.getX(), e.getY());
