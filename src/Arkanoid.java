@@ -6,13 +6,13 @@ import java.awt.*;
 public class Arkanoid extends GraphicsProgram {
 
     /* 动画每一帧间隔10ms*/
-    private static final int DELAY = 250/3;
+    private static final int DELAY = 10;
 
     /* 初始水平速度：每一帧水平方向的移动距离 */
     private static final double VELOCITY_Y = 5;
 
     /* 初始竖直速度：每一帧竖直方向的移动距离 */
-    private static final double VELOCITY_X = 2;
+    private static final double VELOCITY_X = 5;
 
     /* 小球的半径 */
     private static final int BALL_RADIUS = 15;
@@ -32,13 +32,13 @@ public class Arkanoid extends GraphicsProgram {
      * -----------------------
      * 初始化
      */
-    @Override
+
     public void init() {
         makeBall();             // 往屏幕上添加小球
         vx = VELOCITY_X;        // 水平速度
         vy = VELOCITY_Y;        // 竖直速度
     }
-    @Override
+
     public void run() {
         // 等待用户点击
         waitForClick();
