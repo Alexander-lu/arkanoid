@@ -12,7 +12,7 @@ public class Arkanoid extends GraphicsProgram {
     private static final double VELOCITY_Y = 5;
 
     /* 初始竖直速度：每一帧竖直方向的移动距离 */
-    private static final double VELOCITY_X = 2;
+    private static final double VELOCITY_X = 5;
 
     /* 小球的半径 */
     private static final int BALL_RADIUS = 15;
