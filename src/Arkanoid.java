@@ -32,6 +32,7 @@ public class Arkanoid extends GraphicsProgram {
 
     /* 小球 */
     GOval ball;
+    GRect GRectpaddle;
     /* 小球此刻的水平速度 */
     double vx;
     /* 小球此刻的竖直速度 */
@@ -189,6 +190,10 @@ public class Arkanoid extends GraphicsProgram {
                 add(brick, x, y);
             }
         }
+        GRect brick1 = new GRect(BRICK_WIDTH, BRICK_HEIGHT);
+        brick1.setFilled(true);
+        brick1.setColor(Color.black);
+        add(brick1, 100, 100);
     }
 
     public void we() {
