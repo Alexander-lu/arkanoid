@@ -32,11 +32,13 @@ public class Arkanoid extends GraphicsProgram {
      * -----------------------
      * 初始化
      */
+    @Override
     public void init() {
         makeBall();             // 往屏幕上添加小球
         vx = VELOCITY_X;        // 水平速度
         vy = VELOCITY_Y;        // 竖直速度
     }
+    @Override
     public void run() {
         // 等待用户点击
         waitForClick();
@@ -81,7 +83,7 @@ public class Arkanoid extends GraphicsProgram {
      * 判断小球是否击中了底部边界
      */
     boolean hitBottomWall() {
-        return ball.getY() > getHeight() - ball.getHeight();
+        return ball.getY() >= getHeight() - ball.getHeight();
     }
 
     /**
