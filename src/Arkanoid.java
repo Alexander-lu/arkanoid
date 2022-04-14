@@ -9,6 +9,7 @@ public class Arkanoid extends GraphicsProgram {
     RandomGenerator randomGenerator = RandomGenerator.getInstance();
     /* 动画每一帧间隔10ms*/
     private static final int DELAY = 16;
+    boolean c = true;
 
     /* 初始水平速度：每一帧水平方向的移动距离 */
     private static final double VELOCITY_Y = 5;
@@ -48,7 +49,7 @@ public class Arkanoid extends GraphicsProgram {
         waitForClick();
 
         //noinspection InfiniteLoopStatement
-        while (true) {
+        while (c) {
             // 检查是否撞墙
             checkCollision();
 
@@ -69,16 +70,19 @@ public class Arkanoid extends GraphicsProgram {
     void checkCollision() {
         // 小球碰到上下两侧的墙，竖直反弹
         if (hitBottomWall()) {
-            vy = -VELOCITY_Y;
+            c = false;
+            GLabel label = new GLabel("Game Over");
+            add(label, 100, 100);
         } else if (hitTopWall()) {
-            vy = VELOCITY_Y;
+            vy = B;
         }
 
         // 小球碰到左右两侧的墙，水平反弹
         if (hitLeftWall()) {
-            vx = VELOCITY_X;
+            vx = A;
+
         } else if (hitRightWall()) {
-            vx = -VELOCITY_X;
+            vx = -A;
         }
     }
 
