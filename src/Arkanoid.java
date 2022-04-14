@@ -4,6 +4,7 @@ import acm.graphics.GLabel;
 import acm.program.GraphicsProgram;
 import acm.util.RandomGenerator;
 import java.awt.*;
+import java.awt.event.MouseEvent;
 
 public class Arkanoid extends GraphicsProgram {
     RandomGenerator randomGenerator = RandomGenerator.getInstance();
@@ -75,6 +76,7 @@ public class Arkanoid extends GraphicsProgram {
     public void init() {
         makeBall();             // 往屏幕上添加小球
         makeBricks();
+        addMouseListeners();
         vx = A;        // 水平速度
         vy = B;        // 竖直速度
     }
@@ -191,11 +193,11 @@ public class Arkanoid extends GraphicsProgram {
                 add(brick, x, y);
             }
         }
-        GRect brick1 = new GRect(BRICK_WIDTH, BRICK_HEIGHT);
-        brick1.setFilled(true);
-        brick1.setColor(Color.black);
-        add(brick1, 100, 100);
-        paddle=brick1;
+        GRect paddle = new GRect(BRICK_WIDTH, BRICK_HEIGHT);
+        paddle.setFilled(true);
+        paddle.setColor(Color.BLUE);
+        add(paddle, 100, 100);
+        this.paddle=paddle;
     }
 
     public void we() {
@@ -204,5 +206,9 @@ public class Arkanoid extends GraphicsProgram {
             vy = -vy;
             remove(getCollidingObject());
         }
+    }
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        paddle.setLocation(e.getX() - paddle.getWidth() / 2, 420);
     }
 }
