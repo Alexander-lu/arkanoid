@@ -7,24 +7,28 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 
 public class Arkanoid extends GraphicsProgram {
+    public static final int APPLICATION_WIDTH = 400;
+    public static final int APPLICATION_HEIGHT = 600;
     RandomGenerator randomGenerator = RandomGenerator.getInstance();
+
     /* 动画每一帧间隔10ms*/
     private static final int DELAY = 16;
     boolean c = true;
-    public static final int APPLICATION_WIDTH = 400;
-    public static final int APPLICATION_HEIGHT = 600;
+
     public static final Color BRICK_COLOR = Color.BLACK;
     public static final int BRICK_WIDTH = 18;
     public static final int BRICK_HEIGHT = 8;
     public static final int BRICK_MARGIN = 1;
+    private static final int PADDLE_WIDTH = 100;
+    private static final int PADDLE_HEIGHT = 8;
     /* 初始水平速度：每一帧水平方向的移动距离 */
     private static final double VELOCITY_Y = 5;
-    public final int A = randomGenerator.nextInt(1, 10);
+    public final int A = randomGenerator.nextInt(-10, -1);
 
     /* 初始竖直速度：每一帧竖直方向的移动距离 */
     private static final double VELOCITY_X = 2;
-    public final int B = randomGenerator.nextInt(1, 10);
-
+    public final int B = randomGenerator.nextInt(-10, -1);
+public int a = 0;
     /* 小球的半径 */
     private static final int BALL_RADIUS = 15;
 
@@ -109,22 +113,33 @@ public class Arkanoid extends GraphicsProgram {
     void checkCollision() {
         // 小球碰到上下两侧的墙，竖直反弹
         if (hitBottomWall()) {
-            vy = -B;
-//            c = false;
-//            GLabel label = new GLabel("Game Over");
-//            add(label, 100, 100);
-        } else if (hitTopWall()) {
-            vy = B;
-        }
+//            vy = -B;
+            if (a < 3) {
+                remove(ball);
+                GLabel label1 = new GLabel("点击屏幕重新开始");
+                add(label1, 100, 200);
+                a++;
+                makeBall();
+                waitForClick();
+                remove(label1);
+            }else {
+                c = false;
+                GLabel label2 = new GLabel("Game Over");
+                add(label2, 100, 100);
+            }
+            }
+            if (hitTopWall()) {
+                vy = B;
+            }
 
-        // 小球碰到左右两侧的墙，水平反弹
-        if (hitLeftWall()) {
-            vx = A;
-            GLabel label = new GLabel("Game Over");
-        } else if (hitRightWall()) {
-            vx = -A;
+            // 小球碰到左右两侧的墙，水平反弹
+            if (hitLeftWall()) {
+                vx = A;
+                GLabel label = new GLabel("Game Over");
+            } else if (hitRightWall()) {
+                vx = -A;
+            }
         }
-    }
 
     /**
      * Method: Hit Bottom Wall
@@ -193,7 +208,7 @@ public class Arkanoid extends GraphicsProgram {
                 add(brick, x, y);
             }
         }
-        GRect paddle = new GRect(BRICK_WIDTH, BRICK_HEIGHT);
+        GRect paddle = new GRect(PADDLE_WIDTH, PADDLE_HEIGHT);
         paddle.setFilled(true);
         paddle.setColor(Color.BLUE);
         add(paddle, 100, 100);
