@@ -12,9 +12,11 @@ public class Arkanoid extends GraphicsProgram {
 
     /* 初始水平速度：每一帧水平方向的移动距离 */
     private static final double VELOCITY_Y = 5;
+    public final int A= randomGenerator.nextInt(1, 10);
 
     /* 初始竖直速度：每一帧竖直方向的移动距离 */
     private static final double VELOCITY_X = 2;
+    public final int B= randomGenerator.nextInt(1, 10);
 
     /* 小球的半径 */
     private static final int BALL_RADIUS = 15;
@@ -37,8 +39,8 @@ public class Arkanoid extends GraphicsProgram {
     @Override
     public void init() {
         makeBall();             // 往屏幕上添加小球
-        vx = VELOCITY_X;        // 水平速度
-        vy = VELOCITY_Y;        // 竖直速度
+        vx = A;        // 水平速度
+        vy = B;        // 竖直速度
     }
     @Override
     public void run() {
@@ -130,10 +132,9 @@ public class Arkanoid extends GraphicsProgram {
 
         // 填充颜色是黑色
         ball.setColor(BALL_COLOR);
-        int a = randomGenerator.nextInt(15, 385);
-        int b = randomGenerator.nextInt(15, 585);
+
         // 添加到画布上(20,20)的位置
-        add(ball, a, b);
+        add(ball, 20, 20);
     }
 
 }
