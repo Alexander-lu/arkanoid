@@ -1,10 +1,12 @@
 import acm.graphics.*;
 import acm.program.*;
-
+import acm.graphics.GLabel;
+import acm.program.GraphicsProgram;
+import acm.util.RandomGenerator;
 import java.awt.*;
 
 public class Arkanoid extends GraphicsProgram {
-
+    RandomGenerator randomGenerator = RandomGenerator.getInstance();
     /* 动画每一帧间隔10ms*/
     private static final int DELAY = 16;
 
@@ -50,6 +52,7 @@ public class Arkanoid extends GraphicsProgram {
 
             // 移动小球的位置
             ball.move(vx, vy);
+
 
             // 延迟
             pause(DELAY);
@@ -127,9 +130,10 @@ public class Arkanoid extends GraphicsProgram {
 
         // 填充颜色是黑色
         ball.setColor(BALL_COLOR);
-
+        int a = randomGenerator.nextInt(15, 385);
+        int b = randomGenerator.nextInt(15, 585);
         // 添加到画布上(20,20)的位置
-        add(ball, 20, 20);
+        add(ball, a, b);
     }
 
 }
