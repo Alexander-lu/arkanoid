@@ -18,11 +18,11 @@ public class Arkanoid extends GraphicsProgram {
     public static final int BRICK_MARGIN = 1;
     /* 初始水平速度：每一帧水平方向的移动距离 */
     private static final double VELOCITY_Y = 5;
-    public final int A= randomGenerator.nextInt(1, 10);
+    public final int A = randomGenerator.nextInt(1, 10);
 
     /* 初始竖直速度：每一帧竖直方向的移动距离 */
     private static final double VELOCITY_X = 2;
-    public final int B= randomGenerator.nextInt(1, 10);
+    public final int B = randomGenerator.nextInt(1, 10);
 
     /* 小球的半径 */
     private static final int BALL_RADIUS = 15;
@@ -37,6 +37,33 @@ public class Arkanoid extends GraphicsProgram {
     /* 小球此刻的竖直速度 */
     double vy;
 
+    //        这里调用了函数getCollidingObject()
+    public GObject getCollidingObject() {
+        double x = ball.getX();
+        double y = ball.getY();
+
+        double x1 = ball.getX();
+        double y1 = ball.getBottomY();
+
+        double x2 = ball.getRightX();
+        double y2 = ball.getY();
+
+        double x3 = ball.getRightX();
+        double y3 = ball.getBottomY();
+
+        if (getElementAt(x, y) != null) {
+            return getElementAt(x, y);
+        } else if (getElementAt(x1, y1) != null) {
+            return getElementAt(x1, y1);
+        } else if (getElementAt(x2, y2) != null) {
+            return getElementAt(x2, y2);
+        } else if (getElementAt(x3, y3) != null) {
+            return getElementAt(x3, y3);
+        } else {
+            return null;
+        }
+    }
+
     /**
      * Method: Init
      * -----------------------
@@ -49,6 +76,7 @@ public class Arkanoid extends GraphicsProgram {
         vx = A;        // 水平速度
         vy = B;        // 竖直速度
     }
+
     @Override
     public void run() {
 
@@ -62,7 +90,7 @@ public class Arkanoid extends GraphicsProgram {
 
             // 移动小球的位置
             ball.move(vx, vy);
-
+            we();
 
             // 延迟
             pause(DELAY);
@@ -77,9 +105,10 @@ public class Arkanoid extends GraphicsProgram {
     void checkCollision() {
         // 小球碰到上下两侧的墙，竖直反弹
         if (hitBottomWall()) {
-            c = false;
-            GLabel label = new GLabel("Game Over");
-            add(label, 100, 100);
+            vy = -B;
+//            c = false;
+//            GLabel label = new GLabel("Game Over");
+//            add(label, 100, 100);
         } else if (hitTopWall()) {
             vy = B;
         }
@@ -145,8 +174,9 @@ public class Arkanoid extends GraphicsProgram {
         ball.setColor(BALL_COLOR);
 
         // 添加到画布上(20,20)的位置
-        add(ball, 20, 20);
+        add(ball, 300, 500);
     }
+
     public void makeBricks() {
         // 一堆黑色的砖块
         for (int i = 0; i < 7; i++) {
@@ -155,9 +185,17 @@ public class Arkanoid extends GraphicsProgram {
                 brick.setFilled(true);
                 brick.setColor(BRICK_COLOR);
                 int x = j * (BRICK_MARGIN * 2 + BRICK_WIDTH) + BRICK_MARGIN;
-                int y =0 + i * (BRICK_MARGIN * 2 + BRICK_HEIGHT) + BRICK_MARGIN;
+                int y = 0 + i * (BRICK_MARGIN * 2 + BRICK_HEIGHT) + BRICK_MARGIN;
                 add(brick, x, y);
             }
+        }
+    }
+
+    public void we() {
+        if (getCollidingObject() != null) {
+            vx = -vx;
+            vy = -vy;
+            remove(getCollidingObject());
         }
     }
 }
