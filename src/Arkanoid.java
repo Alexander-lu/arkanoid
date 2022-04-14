@@ -6,13 +6,13 @@ import java.awt.*;
 public class Arkanoid extends GraphicsProgram {
 
     /* 动画每一帧间隔10ms*/
-    private static final int DELAY = 10;
+    private static final int DELAY = 12;
 
     /* 初始水平速度：每一帧水平方向的移动距离 */
     private static final double VELOCITY_Y = 5;
 
     /* 初始竖直速度：每一帧竖直方向的移动距离 */
-    private static final double VELOCITY_X = 5;
+    private static final double VELOCITY_X = 2;
 
     /* 小球的半径 */
     private static final int BALL_RADIUS = 15;
