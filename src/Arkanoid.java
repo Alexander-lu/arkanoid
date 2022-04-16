@@ -28,6 +28,7 @@ public class Arkanoid extends GraphicsProgram {
     public final int VERTICAL = randomGenerator.nextInt(-12, -8);
     /* 定义a，用于判断是否死亡3次结束游戏 */
     public int a = 0;
+    public int n =0;
     /* 小球的半径 */
     private static final int BALL_RADIUS = 15;
     /* 小球 挡板 */
@@ -137,6 +138,7 @@ public class Arkanoid extends GraphicsProgram {
         makeBall();// 往屏幕上添加小球
         makeBricks();// 往屏幕上添加砖块
         makePaddle();// 往屏幕上添加挡板
+        n = 0;
         addMouseListeners();// 启用鼠标监听器
         vx = LEVEL;// 水平速度
         vy = VERTICAL;// 垂直速度
@@ -169,20 +171,25 @@ public class Arkanoid extends GraphicsProgram {
                 if (objColli.getColor() == Color.CYAN) {
                     remove(objColli);
                     vy = -vy;
+                    n++;
                 } else if (objColli.getColor() == Color.GREEN) {
                     remove(objColli);
                     vy = -vy;
+                    n++;
                 } else if (objColli.getColor() == Color.YELLOW) {
                     remove(objColli);
                     vy = -vy;
+                    n++;
                 }  else if (objColli.getColor() == Color.BLACK) {
                         vy = -vy;
                 } else if (objColli.getColor() == Color.ORANGE) {
                     remove(objColli);
                     vy = -vy;
+                    n++;
                 } else if (objColli.getColor() == Color.RED) {
                     remove(objColli);
                     vy = -vy;
+                    n++;
                 }
             }
         }
@@ -197,7 +204,7 @@ public class Arkanoid extends GraphicsProgram {
                 remove(paddle);
                 remove(ball);
                 clear();
-                JOptionPane.showMessageDialog(null, "点击确定重新开始");
+                JOptionPane.showMessageDialog(null, "你的积分为："+n+"\n"+"点击确定重新开始");
                 a++;
                 init();
                 run();
