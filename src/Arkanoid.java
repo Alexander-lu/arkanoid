@@ -4,10 +4,10 @@ import acm.util.RandomGenerator;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
-
+import acm.gui.JStringList;
 public class Arkanoid extends GraphicsProgram {
     /* 游戏界面的长和宽 */
-    public static final int APPLICATION_WIDTH = 620;
+    public static final int APPLICATION_WIDTH = 1020;
     public static final int APPLICATION_HEIGHT = 800;
     /* 定义一个randomGenerator随机生成数 */
     RandomGenerator randomGenerator = RandomGenerator.getInstance();
@@ -27,8 +27,8 @@ public class Arkanoid extends GraphicsProgram {
     /* 初始竖直速度：每一帧竖直方向的移动距离 */
     public final int VERTICAL = randomGenerator.nextInt(-12, -8);
     /* 定义a，用于判断是否死亡3次结束游戏 */
-    public int a = 0;
-    public int n =0;
+    public int deathTimes = 0;
+    public int points =0;
     /* 小球的半径 */
     private static final int BALL_RADIUS = 15;
     /* 小球 挡板 */
@@ -38,7 +38,203 @@ public class Arkanoid extends GraphicsProgram {
     double vx;
     /* 小球此刻的竖直速度 */
     double vy;
-    /* 得到小球碰到的物体 */
+    /* 显示游戏规则 */
+    JStringList Rulers = new JStringList();
+    String[] strArray={"你的积分是："+Integer.toString(points)+"分","你已经死亡："+Integer.toString(deathTimes)+"次","游戏规则是：","蓝色砖块1分","绿色砖块2分","黄色砖块3分","橙色砖块4分","红色砖块5分","你有3条命","消除所有砖块即获胜"};
+    /**
+     * 初始化
+     */
+    @Override
+    public void init() {
+        this.add(Rulers);
+        this.setResizable(false);
+        Color[] colarArray = {Color.BLACK,Color.BLACK};
+        Rulers.setItems(strArray,colarArray);
+        makeBall();// 往屏幕上添加小球
+        makeBricks();// 往屏幕上添加砖块
+        makePaddle();// 往屏幕上添加挡板
+        points = 0;
+        addMouseListeners();// 启用鼠标监听器
+        vx = LEVEL;// 水平速度
+        vy = VERTICAL;// 垂直速度
+    }
+    @Override
+    public void run() {
+        // 等待用户点击
+        waitForClick();
+        while (stopGame) {
+            // 检查是否撞墙
+            checkCollision();
+            // 检查是否撞砖块
+            checkBricks();
+            Rulers.setItem(0,"你的积分是："+Integer.toString(points)+"分");
+            Rulers.setItem(1,"你已经死亡："+Integer.toString(deathTimes)+"次");
+            // 移动小球的位置
+            ball.move(vx, vy);
+            // 延迟
+            pause(DELAY);
+        }
+    }
+    /**
+     * 检查是否撞砖块
+     */
+    void checkBricks() {
+        GObject objBrick = getCollidingObject();
+        if (objBrick != null) {
+            if (objBrick == paddle) {
+                vy = -vy;
+            }
+            else {
+                if (objBrick.getColor() == Color.CYAN) {
+                    remove(objBrick);
+                    vy = -vy;
+                    points++;
+                } else if (objBrick.getColor() == Color.GREEN) {
+                    remove(objBrick);
+                    vy = -vy;
+                    points++;
+                    points++;
+                } else if (objBrick.getColor() == Color.YELLOW) {
+                    remove(objBrick);
+                    vy = -vy;
+                    points++;
+                    points++;
+                    points++;
+                }  else if (objBrick.getColor() == Color.ORANGE) {
+                    remove(objBrick);
+                    vy = -vy;
+                    points++;
+                    points++;
+                    points++;
+                    points++;
+                } else if (objBrick.getColor() == Color.RED) {
+                    remove(objBrick);
+                    vy = -vy;
+                    points++;
+                    points++;
+                    points++;
+                    points++;
+                    points++;
+                } else if (objBrick.getColor() == Color.BLACK) {
+                    vy = -vy;
+                }
+            }
+        }
+    }
+    /**
+     * 检查小球是否和墙相撞，如果相撞，改变小球运动方向
+     */
+    void checkCollision() {
+        // 小球碰到上侧的墙，计算3次生命结束游戏；小球碰到下侧的墙，竖直反弹
+        if (hitBottomWall()) {
+            if (deathTimes < 2) {
+                remove(paddle);
+                remove(ball);
+                clear();
+                JOptionPane.showMessageDialog(null, "你的积分为："+points+"\n"+"点击确定重新开始");
+                deathTimes++;
+                init();
+                run();
+                waitForClick();
+            }else {
+                remove(paddle);
+                remove(ball);
+                clear();
+                JOptionPane.showMessageDialog(null, "Game Over"+"\n"+"点击确定重新开始");
+                deathTimes = 0;
+                init();
+                run();
+                waitForClick();
+            }
+        }
+        if (hitTopWall()) {
+                vy = VERTICAL;
+        }
+        // 小球碰到左右两侧的墙，水平反弹
+        if (hitLeftWall()) {
+                vx = -LEVEL;
+        } else if (hitRightWall()) {
+                vx = VERTICAL;
+            }
+        }
+    /**
+     * 判断小球是否击中了底部边界
+     */
+    boolean hitBottomWall() {
+        return ball.getY() > getHeight() - ball.getHeight();
+    }
+    /**
+     * 判断小球是否击中了顶部边界
+     */
+    boolean hitTopWall() {
+        return ball.getY() <= 0;
+    }
+
+    /**
+     * 判断小球是否击中了右侧边界
+     */
+    boolean hitRightWall() {
+        return ball.getX() >= getWidth() - ball.getWidth()-509;
+    }
+    /**
+     * 判断小球是否击中了左侧边界
+     */
+    boolean hitLeftWall() {
+        return ball.getX() <= 0;
+    }
+    /**
+     * 画出一个小球来
+     */
+    public void makeBall() {
+        // 设置半径
+        double size = BALL_RADIUS * 2;
+        ball = new GOval(size, size);
+        // 设置小球为实心
+        ball.setFilled(true);
+        // 填充颜色为随机颜色
+        ball.setColor(randomGenerator.nextColor());
+        // 添加到画布上(300，500)的位置
+        add(ball, 300, 500);
+    }
+    /**
+     * 画出一堆五颜六色的砖块
+     */
+    public void makeBricks() {
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 30; j++) {
+                GRect brick = new GRect(BRICK_WIDTH, BRICK_HEIGHT);
+                brick.setFilled(true);
+                if (i < 2) {
+                    brick.setColor(Color.RED);
+                } else if (i < 4) {
+                    brick.setColor(Color.ORANGE);
+                } else if (i < 6) {
+                    brick.setColor(Color.YELLOW);
+                } else if (i < 8) {
+                    brick.setColor(Color.GREEN);
+                } else {
+                    brick.setColor(Color.CYAN);
+                }
+                int x = j * (BRICK_MARGIN * 2 + BRICK_WIDTH) + BRICK_MARGIN;
+                int y = i * (BRICK_MARGIN * 2 + BRICK_HEIGHT) + BRICK_MARGIN;
+                add(brick, x, y);
+            }
+        }
+    }
+    /**
+     * 画出一个挡板
+     */
+    public void makePaddle(){
+        // 设置挡板长宽
+        GRect paddle = new GRect(PADDLE_WIDTH, PADDLE_HEIGHT);
+        // 设置挡板为实心
+        paddle.setFilled(true);
+        // 设置挡板颜色
+        paddle.setColor(Color.BLACK);
+        // 添加挡板到（100，700）
+        add(paddle, 100, 700);
+        this.paddle=paddle;
+    }
     public GObject getCollidingObject() {
         /* getElementAt(x, y)可以获取画布上(x,y)位置的图形 */
         GObject obj = getElementAt(ball.getX(), ball.getY());
@@ -129,178 +325,6 @@ public class Arkanoid extends GraphicsProgram {
         }
         return null;
         //撞到小球任意四条边中的一个回复物体，没撞到回复null
-    }
-    /**
-     * 初始化
-     */
-    @Override
-    public void init() {
-        makeBall();// 往屏幕上添加小球
-        makeBricks();// 往屏幕上添加砖块
-        makePaddle();// 往屏幕上添加挡板
-        n = 0;
-        addMouseListeners();// 启用鼠标监听器
-        vx = LEVEL;// 水平速度
-        vy = VERTICAL;// 垂直速度
-    }
-    @Override
-    public void run() {
-        // 等待用户点击
-        waitForClick();
-        while (stopGame) {
-            // 检查是否撞墙
-            checkCollision();
-            // 检查是否撞砖块
-            checkBricks();
-            // 移动小球的位置
-            ball.move(vx, vy);
-            // 延迟
-            pause(DELAY);
-        }
-    }
-    /**
-     * 检查是否撞砖块
-     */
-    void checkBricks() {
-        GObject objColli = getCollidingObject();
-        if (objColli != null) {
-            if (objColli == paddle) {
-                vy = -vy;
-            }
-            else {
-                if (objColli.getColor() == Color.CYAN) {
-                    remove(objColli);
-                    vy = -vy;
-                    n++;
-                } else if (objColli.getColor() == Color.GREEN) {
-                    remove(objColli);
-                    vy = -vy;
-                    n++;
-                } else if (objColli.getColor() == Color.YELLOW) {
-                    remove(objColli);
-                    vy = -vy;
-                    n++;
-                }  else if (objColli.getColor() == Color.BLACK) {
-                        vy = -vy;
-                } else if (objColli.getColor() == Color.ORANGE) {
-                    remove(objColli);
-                    vy = -vy;
-                    n++;
-                } else if (objColli.getColor() == Color.RED) {
-                    remove(objColli);
-                    vy = -vy;
-                    n++;
-                }
-            }
-        }
-    }
-    /**
-     * 检查小球是否和墙相撞，如果相撞，改变小球运动方向
-     */
-    void checkCollision() {
-        // 小球碰到上侧的墙，计算3次生命结束游戏；小球碰到下侧的墙，竖直反弹
-        if (hitBottomWall()) {
-            if (a < 3) {
-                remove(paddle);
-                remove(ball);
-                clear();
-                JOptionPane.showMessageDialog(null, "你的积分为："+n+"\n"+"点击确定重新开始");
-                a++;
-                init();
-                run();
-                waitForClick();
-            }else {
-                stopGame = false;
-                JOptionPane.showMessageDialog(null, "Game Over");
-            }
-        }
-        if (hitTopWall()) {
-                vy = VERTICAL;
-        }
-        // 小球碰到左右两侧的墙，水平反弹
-        if (hitLeftWall()) {
-                vx = -LEVEL;
-        } else if (hitRightWall()) {
-                vx = VERTICAL;
-            }
-        }
-    /**
-     * 判断小球是否击中了底部边界
-     */
-    boolean hitBottomWall() {
-        return ball.getY() > getHeight() - ball.getHeight();
-    }
-    /**
-     * 判断小球是否击中了顶部边界
-     */
-    boolean hitTopWall() {
-        return ball.getY() <= 0;
-    }
-
-    /**
-     * 判断小球是否击中了右侧边界
-     */
-    boolean hitRightWall() {
-        return ball.getX() >= getWidth() - ball.getWidth();
-    }
-    /**
-     * 判断小球是否击中了左侧边界
-     */
-    boolean hitLeftWall() {
-        return ball.getX() <= 0;
-    }
-    /**
-     * 画出一个小球来
-     */
-    public void makeBall() {
-        // 设置半径
-        double size = BALL_RADIUS * 2;
-        ball = new GOval(size, size);
-        // 设置小球为实心
-        ball.setFilled(true);
-        // 填充颜色为随机颜色
-        ball.setColor(randomGenerator.nextColor());
-        // 添加到画布上(300，500)的位置
-        add(ball, 300, 500);
-    }
-    /**
-     * 画出一堆五颜六色的砖块
-     */
-    public void makeBricks() {
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 30; j++) {
-                GRect brick = new GRect(BRICK_WIDTH, BRICK_HEIGHT);
-                brick.setFilled(true);
-                if (i < 2) {
-                    brick.setColor(Color.RED);
-                } else if (i < 4) {
-                    brick.setColor(Color.ORANGE);
-                } else if (i < 6) {
-                    brick.setColor(Color.YELLOW);
-                } else if (i < 8) {
-                    brick.setColor(Color.GREEN);
-                } else {
-                    brick.setColor(Color.CYAN);
-                }
-                int x = j * (BRICK_MARGIN * 2 + BRICK_WIDTH) + BRICK_MARGIN;
-                int y = i * (BRICK_MARGIN * 2 + BRICK_HEIGHT) + BRICK_MARGIN;
-                add(brick, x, y);
-            }
-        }
-    }
-    /**
-     * 画出一个挡板
-     */
-    public void makePaddle(){
-        // 设置挡板长宽
-        GRect paddle = new GRect(PADDLE_WIDTH, PADDLE_HEIGHT);
-        // 设置挡板为实心
-        paddle.setFilled(true);
-        // 设置挡板颜色
-        paddle.setColor(Color.BLACK);
-        // 添加挡板到（100，700）
-        add(paddle, 100, 700);
-        this.paddle=paddle;
     }
     /**
      * 鼠标监听
